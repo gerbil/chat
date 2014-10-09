@@ -117,6 +117,7 @@ body {
             padding: 0;
             vertical-align: top;
          }
+
             #actions ul li {
                 display: inline-block;
                 padding: 0 10px 0 10px;
@@ -142,7 +143,21 @@ body {
                     padding-left: 4px;
                     font-size: 12px;
                 }
-                #actions ul li form#changeAvatar { }
+
+                #actions ul .progressBar {
+                    display: inline-block;
+                    margin: 0 5px 0 15px;
+                    width: 200px;
+                    height: 17px;
+                    border: 1px solid #ffffff;
+                }
+                    #actions ul .progressBar .inner {
+                        display: inline-block;
+                        max-width: 200px;
+                        background: #29d;
+                        height: 15px;
+                    }
+
                 #actions ul li form input[type="file"] {
                     border: 0 none;
                     width: 170px;

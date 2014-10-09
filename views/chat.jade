@@ -17,6 +17,8 @@ block content
 						form#changeAvatar(action='/chat/upload', method='post', enctype="multipart/form-data")
 							input#changeAvatar(type='file', name='file')
 							input(type='submit')
+						.progressBar
+							.inner
 			#user-list
 			#messages
 				ul.chat

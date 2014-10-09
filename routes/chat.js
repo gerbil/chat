@@ -50,7 +50,7 @@ router.post('/upload', function (req, res) {
             file.on('data', function(data) {
                 chunkSize += data.length;
                 progressPercent = Math.round(chunkSize / fileFullSizeOnePercent);
-                console.log('progress ' + progressPercent + ' %');
+               // console.log('progress ' + progressPercent + ' %');
             });
             fstream.on('close', function () {
                 //For AJAX
