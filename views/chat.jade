@@ -1,0 +1,32 @@
+extends layout
+
+block content
+	#content
+		#chat
+			#room-list
+			#actions
+				img(src='../images/ninja.png')
+				ul
+					li#changeNick Nick
+						form#changeNick
+							input#changeNick(type='text', autocomplete='off', placeholder='nickname')
+					li#changeRoom Room
+						form#changeRoom
+							input#changeRoom(type='text', autocomplete='off', placeholder='room')
+					li#changeAvatar Avatar
+						form#changeAvatar(action='/chat/upload', method='post', enctype="multipart/form-data")
+							input#changeAvatar(type='file', name='file')
+							input(type='submit')
+			#user-list
+			#messages
+				ul.chat
+					- for(var i=messages.length-1, ln=0; i>=ln; i--)
+						li.message
+							//- var src = messages[i].avatar+'?dim=50x50'
+							//=src
+							img(src='images/avatar2.jpg?dim=50x50')
+							span.nick=messages[i].name
+							span.time=messages[i].time
+							div.message=messages[i].text
+			form#send-form
+				input#send-message(type='text', autocomplete='off', placeholder='Write Message')
