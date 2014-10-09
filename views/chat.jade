@@ -22,9 +22,7 @@ block content
 				ul.chat
 					- for(var i=messages.length-1, ln=0; i>=ln; i--)
 						li.message
-							//- var src = messages[i].avatar+'?dim=50x50'
-							//=src
-							img(src='images/avatar2.jpg?dim=50x50')
+							img(src=messages[i].avatar)
 							span.nick=messages[i].name
 							span.time=messages[i].time
 							div.message=messages[i].text

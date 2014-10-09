@@ -2,7 +2,6 @@ var express = require('express');
 var redis = require('redis');
 var busboy = require('connect-busboy'); //middleware for form/file upload
 var fs = require('fs-extra'); //File System - for file manipulation
-var qt = require('quickthumb'); //For avatar thumbs on a fly
 
 var router = express.Router();
 
@@ -13,8 +12,7 @@ router.use(busboy({
     }
 }));
 
-//router.use(express.static('public/'));
-router.use(qt.static(__dirname + '/../public'));
+router.use(express.static('public/'));
 
 // DB server connect
 var redisClient = redis.createClient('6379', '127.0.0.1');
@@ -36,7 +34,7 @@ router.get('/', function(req, res) {
 });
 
 /* POST upload avatar */
-router.post('/upload', function (req, res, next) {
+router.post('/upload', function (req, res) {
         var fstream;
         var avatarFolder = 'public/images/avatars/';
         var progressPercent = 0;
