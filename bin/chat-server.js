@@ -6,7 +6,7 @@ var guestNumber = 1;
 var nickNames = {};
 var namesUsed = [];
 var currentRoom = {};
-//var avatarImg = 'default.jpg';
+var avatarImg = 'default.jpg';
 var namespace = '/';
 
 exports.listen = function (server) {
@@ -16,9 +16,7 @@ exports.listen = function (server) {
         //console.log(Object.keys(io.nsps[namespace].adapter.rooms));
 
         guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
-
-        //handleChangeAvatar(avatarImg);
-
+        handleChangeAvatar(socket, avatarImg);
         joinRoom(socket, 'Lobby');
         handleMessageBroadcasting(socket, nickNames);
         handleNameChangeAttempts(socket, nickNames, namesUsed);

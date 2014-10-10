@@ -72,8 +72,6 @@ $(document).ready(function () {
         var avatarImg = localStorage.getItem('avatar');
         if (typeof avatarImg != "undefined") {
             socket.emit('changeAvatar', avatarImg);
-        } else {
-            socket.emit('changeAvatar', 'default.jpg');
         }
     }
 
@@ -94,7 +92,7 @@ $(document).ready(function () {
     });
 
     socket.on('message', function (message) {
-        $('#messages ul.chat').append(divEscapedContentElement(message.text, message.name, message.avatar));
+        $('#messages ul.chat').append(divEscapedContentElement(message.text, message.name));
         //console.log("Normal message received -> " + message.text + " : " + message.name);
     });
 
@@ -153,7 +151,9 @@ $(document).ready(function () {
 
     // Меняем ник
     $('#actions ul li#changeNick').bind("click", function () {
-        $('form#changeNick').toggle();
+        $('form#changeNick').show();
+        $('form#changeRoom').hide();
+        $('form#changeAvatar').hide();
     });
     $('#actions ul li#changeNick').bind("submit", function () {
         $('form#changeNick').hide();
@@ -163,7 +163,9 @@ $(document).ready(function () {
 
     // Меняем рум
     $('#actions ul li#changeRoom').bind("click", function () {
-        $('form#changeRoom').toggle();
+        $('form#changeNick').hide();
+        $('form#changeRoom').show();
+        $('form#changeAvatar').hide();
     });
     $('#actions ul li#changeRoom').bind("submit", function () {
         $('form#changeRoom').hide();
@@ -173,7 +175,9 @@ $(document).ready(function () {
 
     // Меняем аватар
     $('#actions ul li#changeAvatar').bind("click", function () {
-        $('form#changeAvatar').toggle();
+        $('form#changeNick').hide();
+        $('form#changeRoom').hide();
+        $('form#changeAvatar').show();
     });
     $('#actions ul li#changeAvatar').bind("submit", function () {
         //console.log("Uploading " + $('input#changeAvatar').prop('files')[0]['name']);
