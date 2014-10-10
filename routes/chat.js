@@ -2,6 +2,7 @@ var express = require('express');
 var redis = require('redis');
 var busboy = require('connect-busboy'); //middleware for form/file upload
 var fs = require('fs-extra'); //File System - for file manipulation
+var easyimg = require('easyimage'); //Image resize
 
 var router = express.Router();
 
@@ -45,7 +46,8 @@ router.post('/upload', function (req, res) {
         req.pipe(req.busboy);
 
         req.busboy.on('file', function (fieldname, file, filename) {
-            fstream = fs.createWriteStream(avatarFolder + filename);
+            var avatarImg = avatarFolder + filename;
+            fstream = fs.createWriteStream(avatarImg);
             file.pipe(fstream);
             file.on('data', function(data) {
                 chunkSize += data.length;
@@ -57,6 +59,14 @@ router.post('/upload', function (req, res) {
                 res.writeHead(200, { 'Content-Type': 'text/plain'});
                 res.write('ok');  //response ok
                 res.end();
+
+                easyimg.resize({
+                    src: avatarImg,
+                    dst: avatarImg,
+                    width: 50,
+                    height: 50
+                });
+
             });
         });
 });

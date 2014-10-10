@@ -4,7 +4,7 @@ function divEscapedContentElement(message, name) {
     if (message.length > 0) {
         var time = new Date();
         var timestamp = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
-        result = $('<li class="message"></li>').html('<img class="avatar" src="images/avatar2.jpg"/><span class="nick">' + name + '</span><span class="time">' + timestamp + '</span><div class="message">' + message + '</div>');
+        result = $('<li class="message"></li>').html('<img class="avatar" src="images/default.jpg"/><span class="nick">' + name + '</span><span class="time">' + timestamp + '</span><div class="message">' + message + '</div>');
     }
     return result;
 }
@@ -66,6 +66,17 @@ $(document).ready(function () {
         }
     }
 
+    // Проверяем localStorage на наличие аватара
+    // Если есть аватар, меняем на него
+    if ('localStorage' in window && localStorage.getItem('avatar')) {
+        var avatarImg = localStorage.getItem('avatar');
+        if (typeof avatarImg != "undefined") {
+            socket.emit('changeAvatar', avatarImg);
+        } else {
+            socket.emit('changeAvatar', 'default.jpg');
+        }
+    }
+
     socket.on('nameResult', function (result) {
         if (result.success) {
             localStorage.setItem('nickname', result.name);
@@ -83,7 +94,7 @@ $(document).ready(function () {
     });
 
     socket.on('message', function (message) {
-        $('#messages ul.chat').append(divEscapedContentElement(message.text, message.name));
+        $('#messages ul.chat').append(divEscapedContentElement(message.text, message.name, message.avatar));
         //console.log("Normal message received -> " + message.text + " : " + message.name);
     });
 
@@ -132,7 +143,7 @@ $(document).ready(function () {
     //$('#actions ul').hide(); // Прячем менюшку
     $('form#changeNick').hide();  // Прячем кнопки
     $('form#changeRoom').hide(); // Прячем кнопки
-    //$('form#changeAvatar').hide(); // Прячем кнопки
+    $('form#changeAvatar').hide(); // Прячем кнопки
     $('li#changeAvatar .progressBar').hide();
 
     // Вешаем на иконку триггер дёргать менюшку
@@ -162,7 +173,7 @@ $(document).ready(function () {
 
     // Меняем аватар
     $('#actions ul li#changeAvatar').bind("click", function () {
-        $('form#changeAvatar').show();
+        $('form#changeAvatar').toggle();
     });
     $('#actions ul li#changeAvatar').bind("submit", function () {
         //console.log("Uploading " + $('input#changeAvatar').prop('files')[0]['name']);
@@ -207,6 +218,10 @@ $(document).ready(function () {
                     },
                     success: function (data) {
                         $('li#changeAvatar .progressBar').hide();
+                        //changeAvatar(file_data.name);
+                        localStorage.setItem('avatar', file_data.name);
+                        var message = 'Your avatar now changed.';
+                        $('#messages ul.chat').append(divSystemContentElement(message));
                     }
                 }
             )

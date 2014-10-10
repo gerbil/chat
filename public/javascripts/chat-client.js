@@ -2,10 +2,11 @@ var Chat = function(socket) {
     this.socket = socket;
 };
 
-Chat.prototype.sendMessage = function(room, text) {
+Chat.prototype.sendMessage = function (room, text, avatar) {
     var message = {
         room: room,
-        text: text
+        text: text,
+        avatar: avatar
     };
 
     this.socket.emit('message', message);
@@ -28,6 +29,7 @@ Chat.prototype.changeRoom = function(room) {
         newRoom: room
     });
 };
+
 
 Chat.prototype.processCommand = function(command) {
     var words = command.split(' ');

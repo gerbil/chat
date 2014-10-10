@@ -6,6 +6,7 @@ var guestNumber = 1;
 var nickNames = {};
 var namesUsed = [];
 var currentRoom = {};
+//var avatarImg = 'default.jpg';
 var namespace = '/';
 
 exports.listen = function (server) {
@@ -14,7 +15,10 @@ exports.listen = function (server) {
     io.sockets.on('connection', function (socket) {
         //console.log(Object.keys(io.nsps[namespace].adapter.rooms));
 
-        guestNumber = assignGuestName(socket, guestNumber,nickNames, namesUsed);
+        guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
+
+        //handleChangeAvatar(avatarImg);
+
         joinRoom(socket, 'Lobby');
         handleMessageBroadcasting(socket, nickNames);
         handleNameChangeAttempts(socket, nickNames, namesUsed);
@@ -22,7 +26,7 @@ exports.listen = function (server) {
 
         // При получении команды 'rooms' сервер должен отдавать список всех комнат.
         socket.on('rooms', function () {
-           socket.emit('rooms', Object.keys(io.nsps[namespace].adapter.rooms));
+            socket.emit('rooms', Object.keys(io.nsps[namespace].adapter.rooms));
         });
 
         // Возвращаем новый список юзерков текущей комнаты
@@ -77,7 +81,7 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed) {
             if (namesUsed.indexOf(name) == -1) {
                 var previousName = nickNames[socket.id];
                 var previousNameIndex = namesUsed.indexOf(previousName);
-                name = name.substring(0,6); //Ник не длиннее 6 символов
+                name = name.substring(0, 6); //Ник не длиннее 6 символов
                 namesUsed.push(name);
                 nickNames[socket.id] = name;
                 delete namesUsed[previousNameIndex];
@@ -114,8 +118,8 @@ function handleMessageBroadcasting(socket) {
                 room: message.room,
                 text: message.text,
                 name: nickNames[socket.id],
-                avatar: 'images/avatar2.jpg',
-                time: timestamp
+                time: timestamp,
+                avatar: 'images/default.jpg'
             };
 
             // Передать сообщение вместе с ником сообщаюшего всем в комнате
@@ -143,5 +147,11 @@ function handleClientDisconnection(socket) {
         var nameIndex = namesUsed.indexOf(nickNames[socket.id]);
         delete namesUsed[nameIndex];
         delete nickNames[socket.id];
+    });
+}
+
+function handleChangeAvatar(socket) {
+    socket.on('changeAvatar', function (avatarImg) {
+        console.log(avatarImg);
     });
 }
