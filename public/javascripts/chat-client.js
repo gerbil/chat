@@ -2,25 +2,15 @@ var Chat = function(socket) {
     this.socket = socket;
 };
 
-Chat.prototype.sendMessage = function (room, text) {
+Chat.prototype.sendMessage = function (room, text, avatar) {
     var message = {
         room: room,
-        text: text
+        text: text,
+        avatar: avatar
     };
 
     this.socket.emit('message', message);
     //console.log("Normal message sent -> " + message.room + " : " + message.text);
-};
-
-
-Chat.prototype.sendSystemMessage = function(room, text) {
-    var message = {
-        room: room,
-        text: text
-    };
-
-    this.socket.emit('message', message);
-    //console.log("System message sent -> " + message.room + " : " + message.text);
 };
 
 Chat.prototype.changeRoom = function(room) {

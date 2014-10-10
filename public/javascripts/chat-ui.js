@@ -1,10 +1,10 @@
-function divEscapedContentElement(message, name) {
+function divEscapedContentElement(message, name, avatar) {
     removeOldMessages();
     var result = false;
     if (message.length > 0) {
         var time = new Date();
         var timestamp = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
-        result = $('<li class="message"></li>').html('<img class="avatar" src="images/default.jpg"/><span class="nick">' + name + '</span><span class="time">' + timestamp + '</span><div class="message">' + message + '</div>');
+        result = $('<li class="message"></li>').html('<img class="avatar" src="' + avatar + '"/><span class="nick">' + name + '</span><span class="time">' + timestamp + '</span><div class="message">' + message + '</div>');
     }
     return result;
 }
@@ -28,16 +28,28 @@ function removeOldMessages() {
     ;
 }
 
+var avatarImg;
 function processUserInput(chatApp, socket) {
-    var message = $('#send-message').val();
+    if (typeof avatarImg != 'undefined') {
+        var message = {
+            text: $('#send-message').val(),
+            avatar: avatarImg
+        }
+    } else {
+        var message = {
+            text: $('#send-message').val(),
+            avatar: 'default.jpg'
+        }
+    }
+
     // Если это системное сообщение
-    if (message.charAt(0) == '/') {
+    if (message.text.charAt(0) == '/') {
         // Вызывает разбор команды nick / join и посылает всем в этой комнате
-        chatApp.processCommand(message);
+        chatApp.processCommand(message.text);
     } else {
         //Вот тут петрушка..
         // Если же это обычное сообщение оно тоже должно всем посылаться
-        chatApp.sendMessage($('#room-list').text(), message);
+        chatApp.sendMessage($('#room-list').text(), message.text, message.avatar);
         //console.log(socket.id);
     }
     $('#send-message').val('');
@@ -69,9 +81,9 @@ $(document).ready(function () {
     // Проверяем localStorage на наличие аватара
     // Если есть аватар, меняем на него
     if ('localStorage' in window && localStorage.getItem('avatar')) {
-        var avatarImg = localStorage.getItem('avatar');
+        avatarImg = localStorage.getItem('avatar');
         if (typeof avatarImg != "undefined") {
-            socket.emit('changeAvatar', avatarImg);
+            avatarImg = avatarImg;
         }
     }
 
@@ -92,7 +104,7 @@ $(document).ready(function () {
     });
 
     socket.on('message', function (message) {
-        $('#messages ul.chat').append(divEscapedContentElement(message.text, message.name));
+        $('#messages ul.chat').append(divEscapedContentElement(message.text, message.name, message.avatar));
         //console.log("Normal message received -> " + message.text + " : " + message.name);
     });
 

@@ -6,7 +6,6 @@ var guestNumber = 1;
 var nickNames = {};
 var namesUsed = [];
 var currentRoom = {};
-var avatarImg = 'default.jpg';
 var namespace = '/';
 
 exports.listen = function (server) {
@@ -16,7 +15,6 @@ exports.listen = function (server) {
         //console.log(Object.keys(io.nsps[namespace].adapter.rooms));
 
         guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
-        handleChangeAvatar(socket, avatarImg);
         joinRoom(socket, 'Lobby');
         handleMessageBroadcasting(socket, nickNames);
         handleNameChangeAttempts(socket, nickNames, namesUsed);
@@ -117,7 +115,7 @@ function handleMessageBroadcasting(socket) {
                 text: message.text,
                 name: nickNames[socket.id],
                 time: timestamp,
-                avatar: 'images/default.jpg'
+                avatar: 'images/avatars/' + message.avatar
             };
 
             // Передать сообщение вместе с ником сообщаюшего всем в комнате
@@ -145,11 +143,5 @@ function handleClientDisconnection(socket) {
         var nameIndex = namesUsed.indexOf(nickNames[socket.id]);
         delete namesUsed[nameIndex];
         delete nickNames[socket.id];
-    });
-}
-
-function handleChangeAvatar(socket) {
-    socket.on('changeAvatar', function (avatarImg) {
-        console.log(avatarImg);
     });
 }
