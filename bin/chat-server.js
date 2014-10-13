@@ -21,6 +21,7 @@ exports.listen = function (server) {
         handleRoomJoining(socket);
 
         // При получении команды 'rooms' сервер должен отдавать список всех комнат.
+        // TODO : Список комнат не работает
         socket.on('rooms', function () {
             socket.emit('rooms', Object.keys(io.nsps[namespace].adapter.rooms));
         });
@@ -44,7 +45,7 @@ exports.listen = function (server) {
 // При коннекте юзер получает ник автоматом
 function assignGuestName(socket, guestNumber, nickNames, namesUsed) {
     var name = 'Guest' + guestNumber;
-    nickNames[socket.id] = name;
+    nickNames[socket.id] = { name: name, avatar: 'images/avatars/default.jpg' };
     socket.emit('nameResult', {
         success: true,
         name: name
@@ -61,7 +62,7 @@ function joinRoom(socket, room) {
     currentRoom[socket.id] = room;
     socket.emit('joinResult', {room: room});
     socket.broadcast.to(room).emit('systemMessage', {
-        text: nickNames[socket.id] + ' has joined <strong>' + room + '</strong>.'
+        text: nickNames[socket.id].name + ' has joined <strong>' + room + '</strong>.'
     });
 };
 
@@ -74,26 +75,31 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed) {
                 message: '<strong>Names cannot begin with "Guest"</strong>.'
             });
         } else {
-            if (namesUsed.indexOf(name) == -1) {
-                var previousName = nickNames[socket.id];
-                var previousNameIndex = namesUsed.indexOf(previousName);
-                name = name.substring(0, 6); //Ник не длиннее 6 символов
-                namesUsed.push(name);
-                nickNames[socket.id] = name;
-                delete namesUsed[previousNameIndex];
-                socket.emit('nameResult', {
-                    success: true,
-                    name: name
-                });
-                socket.broadcast.to(currentRoom[socket.id]).emit('systemMessage', {
-                    text: previousName + ' is now known as <strong>' + name + '</strong>.'
-                });
-            } else {
+            var previousName = nickNames[socket.id];
+            var previousNameIndex = namesUsed.indexOf(previousName);
+            name = name.substring(0, 6); //Ник не длиннее 6 символов
+            namesUsed.push(name);
+            nickNames[socket.id].name = name;
+            delete namesUsed[previousNameIndex];
+            socket.emit('nameResult', {
+                success: true,
+                name: name
+            });
+            socket.broadcast.to(currentRoom[socket.id]).emit('systemMessage', {
+                text: previousName + ' is now known as <strong>' + name + '</strong>.'
+            });
+
+            // Пока нет проверки на уникальность ника
+            // TODO Сделать проверку уникальности
+            /*
+             if (namesUsed.indexOf(name) == -1) {
+
+             } else {
                 socket.emit('nameResult', {
                     success: false,
                     message: '<strong>That name is already in use.</strong>'
                 });
-            }
+             }*/
         }
     });
 };
@@ -113,10 +119,19 @@ function handleMessageBroadcasting(socket) {
             messageFull = {
                 room: message.room,
                 text: message.text,
-                name: nickNames[socket.id],
+                name: nickNames[socket.id].name,
                 time: timestamp,
                 avatar: 'images/avatars/' + message.avatar
             };
+
+            // Удаляем старую запись из объекта юзеров
+            // Добавляем новую с аватаром
+            delete nickNames[socket.id];
+            nickNames[socket.id] = {
+                name: messageFull.name,
+                avatar: 'images/avatars/' + message.avatar
+            }
+
 
             // Передать сообщение вместе с ником сообщаюшего всем в комнате
             socket.emit('message', messageFull);
@@ -145,3 +160,4 @@ function handleClientDisconnection(socket) {
         delete nickNames[socket.id];
     });
 }
+

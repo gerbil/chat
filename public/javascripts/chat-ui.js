@@ -28,7 +28,6 @@ function removeOldMessages() {
     ;
 }
 
-
 function processUserInput(chatApp, socket) {
     // Проверяем localStorage на наличие аватара
     // Если есть аватар, меняем на него
@@ -56,7 +55,7 @@ function processUserInput(chatApp, socket) {
         // Вызывает разбор команды nick / join и посылает всем в этой комнате
         chatApp.processCommand(message.text);
     } else {
-        //Вот тут петрушка..
+        // Вот тут петрушка..
         // Если же это обычное сообщение оно тоже должно всем посылаться
         chatApp.sendMessage($('#room-list').text(), message.text, message.avatar);
         //console.log(socket.id);
@@ -133,14 +132,19 @@ $(document).ready(function () {
     socket.on('users', function (users) {
         $('#user-list').empty();
         users.forEach(function (user) {
-            $('#user-list').append('<div class="user"><img src="images/avatar2.jpg"><div class="nick">' + user + '</div></div>');
+            $('#user-list').append('<div class="user"><img src="' + user.avatar + '"><div class="nick">' + user.name + '</div></div>');
         });
     });
 
-    setInterval(function () {
+    // Возвращаем всех юзеров в этой комнате сразу при запуске
+    // Крутим каждые 10 секунд
+    function getUsersFromCurrentRoom() {
         var currentRoom = $('#room-list').text();
         socket.emit('users', currentRoom);
-        //console.log("Current room from ui - " + currentRoom);
+    }
+
+    setInterval(function () {
+        getUsersFromCurrentRoom();
     }, 1000);
 
     $('#send-message').focus();
@@ -166,6 +170,8 @@ $(document).ready(function () {
     // Меняем ник
     $('#actions ul li#changeNick').bind("click", function () {
         $('form#changeNick').show();
+        $('form#changeRoom').hide();
+        $('form#changeAvatar').hide();
     });
 
     $('#actions ul li#changeNick').bind("submit", function () {
@@ -177,6 +183,8 @@ $(document).ready(function () {
     // Меняем рум
     $('#actions ul li#changeRoom').bind("click", function () {
         $('form#changeRoom').show();
+        $('form#changeNick').hide();
+        $('form#changeAvatar').hide();
     });
     $('#actions ul li#changeRoom').bind("submit", function () {
         $('form#changeRoom').hide();
@@ -187,6 +195,8 @@ $(document).ready(function () {
     // Меняем аватар
     $('#actions ul li#changeAvatar').bind("click", function () {
         $('form#changeAvatar').show();
+        $('form#changeRoom').hide();
+        $('form#changeNick').hide();
     });
     $('#actions ul li#changeAvatar').bind("submit", function () {
         //console.log("Uploading " + $('input#changeAvatar').prop('files')[0]['name']);
@@ -231,7 +241,6 @@ $(document).ready(function () {
                     },
                     success: function (data) {
                         $('li#changeAvatar .progressBar').hide();
-                        //changeAvatar(file_data.name);
                         localStorage.setItem('avatar', file_data.name);
                         var message = 'Your avatar now changed.';
                         $('#messages ul.chat').append(divSystemContentElement(message));
