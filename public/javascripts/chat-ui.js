@@ -28,8 +28,17 @@ function removeOldMessages() {
     ;
 }
 
-var avatarImg;
+
 function processUserInput(chatApp, socket) {
+    // Проверяем localStorage на наличие аватара
+    // Если есть аватар, меняем на него
+    if ('localStorage' in window && localStorage.getItem('avatar')) {
+        avatarImg = localStorage.getItem('avatar');
+        if (typeof avatarImg != "undefined") {
+            var avatarImg = avatarImg;
+        }
+    }
+
     if (typeof avatarImg != 'undefined') {
         var message = {
             text: $('#send-message').val(),
@@ -38,7 +47,7 @@ function processUserInput(chatApp, socket) {
     } else {
         var message = {
             text: $('#send-message').val(),
-            avatar: 'default.jpg'
+            avatar: '../default.jpg'
         }
     }
 
@@ -53,6 +62,8 @@ function processUserInput(chatApp, socket) {
         //console.log(socket.id);
     }
     $('#send-message').val('');
+
+    $("#messages").scrollTop($('#messages')[0].scrollHeight);
 }
 
 var socket = io.connect();
@@ -75,15 +86,6 @@ $(document).ready(function () {
         var nickname = localStorage.getItem('nickname');
         if (nickname.indexOf('Guest') != 0) {
             chatApp.processCommand('/nick ' + nickname);
-        }
-    }
-
-    // Проверяем localStorage на наличие аватара
-    // Если есть аватар, меняем на него
-    if ('localStorage' in window && localStorage.getItem('avatar')) {
-        avatarImg = localStorage.getItem('avatar');
-        if (typeof avatarImg != "undefined") {
-            avatarImg = avatarImg;
         }
     }
 
@@ -149,7 +151,7 @@ $(document).ready(function () {
     });
 
 
-    // Менюшка настройки
+    // Менюшка настройки *********************************************************************************************
     //$('#actions ul').hide(); // Прячем менюшку
     $('form#changeNick').hide();  // Прячем кнопки
     $('form#changeRoom').hide(); // Прячем кнопки
@@ -164,9 +166,8 @@ $(document).ready(function () {
     // Меняем ник
     $('#actions ul li#changeNick').bind("click", function () {
         $('form#changeNick').show();
-        $('form#changeRoom').hide();
-        $('form#changeAvatar').hide();
     });
+
     $('#actions ul li#changeNick').bind("submit", function () {
         $('form#changeNick').hide();
         chatApp.processCommand('/nick ' + $('input#changeNick').val());
@@ -175,9 +176,7 @@ $(document).ready(function () {
 
     // Меняем рум
     $('#actions ul li#changeRoom').bind("click", function () {
-        $('form#changeNick').hide();
         $('form#changeRoom').show();
-        $('form#changeAvatar').hide();
     });
     $('#actions ul li#changeRoom').bind("submit", function () {
         $('form#changeRoom').hide();
@@ -187,8 +186,6 @@ $(document).ready(function () {
 
     // Меняем аватар
     $('#actions ul li#changeAvatar').bind("click", function () {
-        $('form#changeNick').hide();
-        $('form#changeRoom').hide();
         $('form#changeAvatar').show();
     });
     $('#actions ul li#changeAvatar').bind("submit", function () {
@@ -247,13 +244,11 @@ $(document).ready(function () {
         return false;
     });
 
-// Скролим в самый низ с задержкой, чтоб точно прогрузилось окно
+    // Скролим в самый низ с задержкой, чтоб точно прогрузилось окно
     function scroll() {
         // Скролим в самый низ
         $("#messages").scrollTop($('#messages')[0].scrollHeight);
     }
-
     setTimeout(scroll, 1000);
 
-})
-;
+});
