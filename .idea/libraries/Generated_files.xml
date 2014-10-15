@@ -1,7 +1,15 @@
 <component name="libraryTable">
   <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/node_modules/express/node_modules/proxy-addr/node_modules/ipaddr.js/src/ipaddr.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/express/node_modules/proxy-addr/node_modules/ipaddr.js/test/ipaddr.test.js" />
+      </sourceFilesUrls>
+    </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/chat.config.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/express/node_modules/proxy-addr/node_modules/ipaddr.js/src/ipaddr.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/express/node_modules/proxy-addr/node_modules/ipaddr.js/test/ipaddr.test.js" />
     </CLASSES>
     <SOURCES />
   </library>
