@@ -27,7 +27,7 @@ function removeOldMessages() {
     }
 }
 
-function processUserInput(chatApp, socket) {
+function processUserInput(chatApp, socket, message) {
     // Проверяем localStorage на наличие аватара
     // Если есть аватар, меняем на него
     if ('localStorage' in window && localStorage.getItem('avatar')) {
@@ -87,6 +87,15 @@ $(document).ready(function () {
         }
     }
 
+    // Проверяем localStorage на наличие аватара
+    // Если есть аватар, меняем на него
+    if ('localStorage' in window && localStorage.getItem('avatar')) {
+        var avatar = localStorage.getItem('avatar');
+        if (typeof avatar != "undefined") {
+            chatApp.processCommand('/avatar ' + avatar);
+        }
+    }
+
     socket.on('nameResult', function (result) {
         if (result.success) {
             localStorage.setItem('nickname', result.name);
@@ -129,11 +138,11 @@ $(document).ready(function () {
         chatApp.processCommand('/join ' + $(this).text());
     });
 
-
+    // USER LIST
     socket.on('users', function (users) {
         $('#user-list').empty();
         users.forEach(function (user) {
-            $('#user-list').append('<div class="user"><img src="' + user.avatar + '"><div class="nick">' + user.name + '</div></div>');
+            $('#user-list').append('<div class="user"><img src="/images/avatars/' + user.avatar + '"><div class="nick">' + user.name + '</div></div>');
         });
     });
 
@@ -199,7 +208,8 @@ $(document).ready(function () {
         $('form#changeAvatar').show();
         $('form#changeRoom').hide();
         $('form#changeNick').hide();
-    });
+    })
+
     $('#actions ul li#changeAvatar').bind("submit", function () {
         //console.log("Uploading " + $('input#changeAvatar').prop('files')[0]['name']);
         var file_data = $('input#changeAvatar').prop('files')[0];
@@ -244,6 +254,7 @@ $(document).ready(function () {
                     success: function (data) {
                         $('li#changeAvatar .progressBar').hide();
                         localStorage.setItem('avatar', file_data.name);
+                        socket.emit('avatarChange', file_data.name);
                         var message = 'Your avatar now changed.';
                         $('#messages ul.chat').append(divSystemContentElement(message));
                     }

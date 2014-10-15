@@ -38,6 +38,11 @@ Chat.prototype.processCommand = function(command) {
             // Вызывает handleNameChangeAttempts на сервере
             this.socket.emit('nameAttempt', name);
             break;
+        case 'avatar':
+            words.shift();
+            var avatar = words.join(' ');
+            this.socket.emit('avatarChange', avatar);
+            break;
         default:
             message = 'Unrecognized command.';
             break;

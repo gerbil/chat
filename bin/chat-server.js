@@ -39,6 +39,13 @@ exports.listen = function (server) {
             socket.emit('rooms', rooms);
         })
 
+        socket.on('avatarChange', function (avatar) {
+            // Удаляем старую запись из объекта юзеров
+            // Добавляем новую с аватаром
+            delete nickNames[socket.id].avatar;
+            nickNames[socket.id].avatar = avatar;
+        })
+
         // Возвращаем новый список юзерков текущей комнаты
         socket.on('users', function (room) {
             var clients = io.sockets.adapter.rooms[room];
@@ -145,14 +152,6 @@ function handleMessageBroadcasting(socket) {
                 avatar: 'images/avatars/' + message.avatar
             };
 
-            // Удаляем старую запись из объекта юзеров
-            // Добавляем новую с аватаром
-            delete nickNames[socket.id];
-            nickNames[socket.id] = {
-                name: messageFull.name,
-                avatar: 'images/avatars/' + message.avatar
-            }
-
             // Передать сообщение вместе с ником сообщаюшего всем в комнате
             socket.emit('message', messageFull);
             //console.log("Server sent from server -> " + name + ': ' + text + " -> " + room);
@@ -178,4 +177,7 @@ function handleClientDisconnection(socket) {
         delete nickNames[socket.id];
     });
 }
+
+
+
 
