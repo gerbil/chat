@@ -5,6 +5,7 @@ var fs = require('fs-extra'); //File System - for file manipulation
 var easyimg = require('easyimage'); //Image resize
 
 var router = express.Router();
+var redisClient = redis.createClient('6379', '127.0.0.1') // DB server connect
 
 // File upload settings
 router.use(busboy({
@@ -14,9 +15,6 @@ router.use(busboy({
 }));
 
 router.use(express.static('public/'));
-
-// DB server connect
-var redisClient = redis.createClient('6379', '127.0.0.1');
 
 /* GET chat page. */
 router.get('/', function(req, res) {
@@ -70,6 +68,5 @@ router.post('/upload', function (req, res) {
             });
         });
 });
-
 
 module.exports = router;

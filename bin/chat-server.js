@@ -9,63 +9,69 @@ var namesUsed = [];
 var rooms = [];
 var currentRoom = {};
 var namespace = '/';
+var redisClient = redis.createClient('6379', '127.0.0.1'); // DB server connect
 
 exports.listen = function (server) {
     io = socketio.listen(server);
-
     io.sockets.on('connection', function (socket) {
-        //console.log(Object.keys(io.nsps[namespace].adapter.rooms));
-
         guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
         joinRoom(socket, 'Lobby');
         handleMessageBroadcasting(socket, nickNames);
         handleNameChangeAttempts(socket, nickNames, namesUsed);
         handleRoomJoining(socket);
-
-        // При получении команды 'rooms' сервер должен отдавать список всех комнат.
-        socket.on('rooms', function () {
-            // Список клиентов
-            var connectedIds = Object.keys(io.sockets.connected)
-            // Список комнат + клиентов
-            var rooms = Object.keys(io.nsps[namespace].adapter.rooms)
-            // Список комнат
-            for (var i = 0; i < connectedIds.length; i++) {
-                rooms = _.without(rooms, connectedIds[i].toString())
-            }
-            socket.emit('roomsUpdate', rooms)
-        })
-
-        socket.on('join', function () {
-            socket.emit('rooms', rooms);
-        })
-
-        socket.on('avatarChange', function (avatar) {
-            // Удаляем старую запись из объекта юзеров
-            // Добавляем новую с аватаром
-            delete nickNames[socket.id].avatar;
-            nickNames[socket.id].avatar = avatar;
-        })
-
-        // Возвращаем новый список юзерков текущей комнаты
-        socket.on('users', function (room) {
-            var clients = io.sockets.adapter.rooms[room];
-            var users = [];
-            for (var clientId in clients) {
-                users.push(nickNames[io.sockets.connected[clientId].id]);
-            }
-            //console.log(users);
-            socket.emit('users', users);
-        });
-
+        handleRoomsList(socket);
+        handleAvatarChange(socket);
+        handleUserList(socket);
         handleClientDisconnection(socket, nickNames);
     });
-
 };
+
+
+// При получении команды 'rooms' сервер должен отдавать список всех комнат.
+function handleRoomsList(socket) {
+    socket.on('rooms', function () {
+        // Список клиентов
+        var connectedIds = Object.keys(io.sockets.connected)
+        // Список комнат + клиентов
+        var rooms = Object.keys(io.nsps[namespace].adapter.rooms)
+        // Список комнат
+        for (var i = 0; i < connectedIds.length; i++) {
+            rooms = _.without(rooms, connectedIds[i].toString())
+        }
+        socket.emit('roomsUpdate', rooms)
+    })
+}
+
+// Меняем аватар по запросу
+function handleAvatarChange(socket) {
+    socket.on('avatarChange', function (avatar, room) {
+        // Удаляем старую запись из объекта юзеров
+        // Добавляем новую с аватаром
+        delete nickNames[socket.id].avatar;
+        nickNames[socket.id].avatar = avatar;
+        socket.broadcast.to(room).emit('systemMessage', {
+            text: nickNames[socket.id].name + ' has changed avatar.'
+        });
+    })
+}
+
+function handleUserList(socket) {
+// Возвращаем новый список юзерков текущей комнаты
+    socket.on('users', function (room) {
+        var clients = io.sockets.adapter.rooms[room];
+        var users = [];
+        for (var clientId in clients) {
+            users.push(nickNames[io.sockets.connected[clientId].id]);
+        }
+        //console.log(users);
+        socket.emit('users', users);
+    });
+}
 
 // При коннекте юзер получает ник автоматом
 function assignGuestName(socket, guestNumber, nickNames) {
     var name = 'Guest' + guestNumber;
-    nickNames[socket.id] = { name: name, avatar: 'images/avatars/default.jpg' };
+    nickNames[socket.id] = { name: name, avatar: 'default.jpg' };
     socket.emit('nameResult', {
         success: true,
         name: name
@@ -77,13 +83,10 @@ function assignGuestName(socket, guestNumber, nickNames) {
 // При смене комнаты меняет комнату и посылает joinResult всем в команате.
 // После этого посылает message в комнату с текстом has join room
 function joinRoom(socket, room) {
-
     // Добавляем новый рум в список румов только если его там нет
     if (rooms.indexOf(room) == -1) {
         rooms.push(room);
     }
-    //console.log(rooms);
-
     socket.join(room);
     currentRoom[socket.id] = room;
     socket.emit('joinResult', {room: room});
@@ -131,9 +134,6 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed) {
         }
     });
 };
-
-// DB server connect
-var redisClient = redis.createClient('6379', '127.0.0.1');
 
 function handleMessageBroadcasting(socket) {
     socket.on('message', function (message) {

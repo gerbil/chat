@@ -254,7 +254,8 @@ $(document).ready(function () {
                     success: function (data) {
                         $('li#changeAvatar .progressBar').hide();
                         localStorage.setItem('avatar', file_data.name);
-                        socket.emit('avatarChange', file_data.name);
+                        var currentRoom = $('#room').text();
+                        socket.emit('avatarChange', file_data.name, currentRoom);
                         var message = 'Your avatar now changed.';
                         $('#messages ul.chat').append(divSystemContentElement(message));
                     }
