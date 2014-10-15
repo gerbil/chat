@@ -25,7 +25,6 @@ function removeOldMessages() {
     if ($('li.message').size() >= 7) {
         $('.message:eq(0)').remove()
     }
-    ;
 }
 
 function processUserInput(chatApp, socket) {
@@ -57,12 +56,12 @@ function processUserInput(chatApp, socket) {
     } else {
         // Вот тут петрушка..
         // Если же это обычное сообщение оно тоже должно всем посылаться
-        chatApp.sendMessage($('#room-list').text(), message.text, message.avatar);
+        chatApp.sendMessage($('#room').text(), message.text, message.avatar);
         //console.log(socket.id);
     }
     $('#send-message').val('');
 
-    $("#messages").scrollTop($('#messages')[0].scrollHeight);
+    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
 }
 
 var socket = io.connect();
@@ -100,7 +99,7 @@ $(document).ready(function () {
 
     socket.on('joinResult', function (result) {
         localStorage.setItem('room', result.room);
-        $('#room-list').text(result.room);
+        $('#room').text(result.room);
         $('#messages ul.chat').append(divSystemContentElement('Room changed to <strong>' + result.room + '</strong>.'));
     });
 
@@ -114,20 +113,22 @@ $(document).ready(function () {
         // console.log("System message received -> " + message.text);
     });
 
-    socket.on('rooms', function (rooms) {
-        $('#room-list').empty();
-        for (var room in rooms) {
-            room = room.substring(1, room.length);
-            if (room != '') {
-                //console.log(rooms);
-                $('#room-list').append(divEscapedContentElement(room));
-            }
+
+    // ROOM LIST
+    socket.on('roomsUpdate', function (rooms) {
+        $('#room-list ul').empty();
+        for (var i = 0; i < rooms.length; i++) {
+            $('#room-list ul').append('<li>' + rooms[i] + '</li>');
         }
-        $('#room-list div').click(function () {
-            chatApp.processCommand('/join ' + $(this).text());
-            $('#send-message').focus();
-        });
     });
+    setInterval(function () {
+        socket.emit('rooms');
+    }, 2000);
+
+    $('#room-list ul').on('click', 'li', function () {
+        chatApp.processCommand('/join ' + $(this).text());
+    });
+
 
     socket.on('users', function (users) {
         $('#user-list').empty();
@@ -139,10 +140,9 @@ $(document).ready(function () {
     // Возвращаем всех юзеров в этой комнате сразу при запуске
     // Крутим каждые 10 секунд
     function getUsersFromCurrentRoom() {
-        var currentRoom = $('#room-list').text();
+        var currentRoom = $('#room').text();
         socket.emit('users', currentRoom);
     }
-
     setInterval(function () {
         getUsersFromCurrentRoom();
     }, 1000);
@@ -172,6 +172,7 @@ $(document).ready(function () {
         $('form#changeNick').show();
         $('form#changeRoom').hide();
         $('form#changeAvatar').hide();
+        $('#actions ul li#changeNick input').focus()
     });
 
     $('#actions ul li#changeNick').bind("submit", function () {
@@ -185,6 +186,7 @@ $(document).ready(function () {
         $('form#changeRoom').show();
         $('form#changeNick').hide();
         $('form#changeAvatar').hide();
+        $('#actions ul li#changeRoom input').focus()
     });
     $('#actions ul li#changeRoom').bind("submit", function () {
         $('form#changeRoom').hide();
@@ -247,7 +249,6 @@ $(document).ready(function () {
                     }
                 }
             )
-            ;
         }
 
         return false;
@@ -256,8 +257,9 @@ $(document).ready(function () {
     // Скролим в самый низ с задержкой, чтоб точно прогрузилось окно
     function scroll() {
         // Скролим в самый низ
-        $("#messages").scrollTop($('#messages')[0].scrollHeight);
+        $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
     }
+
     setTimeout(scroll, 1000);
 
 });
