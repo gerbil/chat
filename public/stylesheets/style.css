@@ -10,7 +10,6 @@ input, button, select, textarea, ul, li {
     line-height: inherit;
 }
 
-
 /* Превед */
 #content {
     width: 800px;
@@ -19,86 +18,86 @@ input, button, select, textarea, ul, li {
     background: #fff;
 }
 
-    #chat {
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        margin: 50px 0 0 0;
-    }
-
-        #messages {
-            width: 80%;
-            margin: 150px 0 20px 0;
-            overflow-y: auto;
-            padding: 0 40px 0 0;
-        }
-
-            #messages ul.chat {
-                height: 650px;
-                list-style: none;
-                padding-left: 20px;
-            }
-
-            #messages ul.chat li {
-                padding: 10px;
-                font-size: 13px;
-            }
-
-                #messages ul.chat li.message {
-                    border-bottom: 1px solid #e4e6eb;
-                    height: 65px;
-                }
-
-                #messages ul.chat li.message:last-child {
-                    border-bottom: 0 none;
-                }
-
-                #messages ul.chat li span.nick {
-                    padding: 10px;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    vertical-align: top;
-                }
-
-                #messages ul.chat li span.time {
-                    float: right;
-                    vertical-align: top;
-                    color: #c7cbd5;
-                    text-transform: uppercase;
-                 }
-
-                 #messages ul.chat li div.message {
-                    padding-left: 60px;
-                 }
-
-                #chat #messages img, #chat #user-list img {
-                    display: inline-block;
-                    -moz-border-radius: 40px;
-                    -webkit-border-radius: 40px;
-                    border-radius: 40px;
-                    -moz-box-shadow: 0px 0px 2px #888;
-                    -webkit-box-shadow: 0px 0px 2px #888;
-                    box-shadow: 0px 0px 2px #888;
-                }
-
-                    #chat #messages img.system {
-                        display: inline-block;
-                        -moz-border-radius: 0px;
-                        -webkit-border-radius: 0px;
-                        border-radius: 0px;
-                        -moz-box-shadow: 0px;
-                        -webkit-box-shadow: 0px;
-                        box-shadow: 0px;
-                    }
+#chat {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin: 50px 0 0 0;
+}
 
 #room {
-            position: absolute;
-            background: #383e4b;
-            color: #eee;
-            padding: 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+    position: absolute;
+    background: #383e4b;
+    color: #eee;
+    padding: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#messages {
+    width: 80%;
+    margin: 150px 0 20px 0;
+    overflow-y: auto;
+    padding: 0 40px 0 0;
+}
+
+#messages ul.chat {
+    height: 650px;
+    list-style: none;
+    padding-left: 20px;
+}
+
+#messages ul.chat li {
+    padding: 10px;
+    font-size: 13px;
+}
+
+#messages ul.chat li.message {
+    border-bottom: 1px solid #e4e6eb;
+    height: 65px;
+}
+
+#messages ul.chat li.message:last-child {
+    border-bottom: 0 none;
+}
+
+#messages ul.chat li span.nick {
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    vertical-align: top;
+}
+
+#messages ul.chat li span.time {
+    float: right;
+    vertical-align: top;
+    color: #c7cbd5;
+    text-transform: uppercase;
+}
+
+#messages ul.chat li div.message {
+    padding-left: 60px;
+}
+
+#messages img, #chat #user-list img {
+    display: inline-block;
+    -moz-border-radius: 40px;
+    -webkit-border-radius: 40px;
+    border-radius: 40px;
+    -moz-box-shadow: 0px 0px 2px #888;
+    -webkit-box-shadow: 0px 0px 2px #888;
+    box-shadow: 0px 0px 2px #888;
+}
+
+#messages img.system {
+    display: inline-block;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    -moz-box-shadow: 0px;
+    -webkit-box-shadow: 0px;
+    box-shadow: 0px;
+}
 
 #room-list {
     position: absolute;
@@ -128,149 +127,163 @@ input, button, select, textarea, ul, li {
     border: 0 none;
 }
 
-        /* Настройки */
-        #actions {
-            position: absolute;
-            background: #383e4b;
-            right: 92px;
-            color: #eee;
-            font-weight: bold;
-            text-transform: uppercase;
-            height: 50px;
-            cursor: pointer;
-        }
-        #actions ul  {
-            display: inline-block;
-            list-style-type: none;
-            padding: 0;
-            vertical-align: top;
-         }
+/* Настройки */
+#actions {
+    position: absolute;
+    background: #383e4b;
+    right: 92px;
+    color: #eee;
+    font-weight: bold;
+    text-transform: uppercase;
+    height: 50px;
+    cursor: pointer;
+}
 
-            #actions ul li {
-                display: inline-block;
-                padding: 0 10px 0 10px;
-                border-right: 1px solid #fff;
-            }
-            #actions ul li:last-child {
-                border-right: 0 none;
-            }
-            #actions ul li form {
-                display: inline-block;
-                padding-left: 10px;
-            }
-                #actions ul li form input {
-                    -webkit-border-radius:24px;
-                    -moz-border-radius: 2px;
-                    border-radius: 2px;
-                    -webkit-box-shadow: none;
-                    -moz-box-shadow: none;
-                    box-shadow: none;
-                    border: 0;
-                    -webkit-box-sizing: border-box;
-                    -moz-box-sizing: border-box;
-                    padding-left: 4px;
-                    font-size: 12px;
-                }
+#actions ul {
+    display: inline-block;
+    list-style-type: none;
+    padding: 0;
+    vertical-align: top;
+}
 
-                #actions ul .progressBar {
-                    display: inline-block;
-                    margin: 0 5px 0 15px;
-                    width: 200px;
-                    height: 17px;
-                    border: 1px solid #ffffff;
-                }
-                    #actions ul .progressBar .inner {
-                        display: inline-block;
-                        max-width: 200px;
-                        background: #29d;
-                        height: 15px;
-                    }
+#actions ul li {
+    display: inline-block;
+    padding: 0 10px 0 10px;
+    border-right: 1px solid #fff;
+}
 
-                #actions ul li form input[type="file"] {
-                    border: 0 none;
-                    width: 170px;
+#actions ul li:last-child {
+    border-right: 0 none;
+}
 
-                }
-                ::-webkit-file-upload-button {
-                    -webkit-border-radius:24px;
-                    -moz-border-radius: 2px;
-                    border-radius: 2px;
-                    -webkit-box-shadow: none;
-                    -moz-box-shadow: none;
-                    box-shadow: none;
-                    border: 0;
-                    -webkit-box-sizing: border-box;
-                    -moz-box-sizing: border-box;
-                    padding-left: 4px;
-                    font-size: 12px;
-                }
+#actions ul li form {
+    display: inline-block;
+    padding-left: 10px;
+}
 
-        #user-list {
-            position: absolute;
-            right: 0;
-            height: 100%;
-            border-left: 1px solid #ddd;
-            background: #e4e6eb;
-            overflow: hidden;
-            -webkit-backface-visibility: hidden;
-            z-index: 1;
-        }
+#actions ul li form input {
+    -webkit-border-radius: 24px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding-left: 4px;
+    font-size: 12px;
+}
 
-            #user-list .user {
-                padding: 10px 20px 10px 20px;
-                border-bottom: 1px solid #ddd;
-            }
+#actions ul .progressBar {
+    display: inline-block;
+    margin: 0 5px 0 15px;
+    width: 200px;
+    height: 17px;
+    border: 1px solid #ffffff;
+}
 
-                #user-list .user .nick {
-                    font-size: 12px;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    display: table-cell;
-                    text-align: center;
-                }
+#actions ul .progressBar .inner {
+    display: inline-block;
+    max-width: 200px;
+    background: #29d;
+    height: 15px;
+}
 
-        #send-form {
-            border-top: 2px solid #e4e6eb;
-            width: 88.5%;
-        }
+#actions ul li form input[type="file"] {
+    border: 0 none;
+    width: 170px;
 
-         #send-form input {
-                -webkit-border-radius: 2px;
-                -moz-border-radius: 2px;
-                border-radius: 2px;
-                -webkit-box-shadow: none;
-                -moz-box-shadow: none;
-                box-shadow: none;
-                border: 0;
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                background: #c7cbd5;
-                padding: 10px;
-                width: 96%;
-                margin: 1em 0 1em 0;
-            }
+}
 
-                #send-form input[type=text] {
-                    margin-left: 1em;
-                    border: 1px solid #eee;
-                    vertical-align: bottom;
-                    color: #fff;
-                }
+::-webkit-file-upload-button {
+    -webkit-border-radius: 24px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding-left: 4px;
+    font-size: 12px;
+}
 
-                #send-form input[placeholder] {
-                    color: #fff !important;
-                }
-                #send-form ::-webkit-input-placeholder { /* WebKit browsers */
-                    color: #fff;
-                }
-                #send-form :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-                    color: #fff;
-                    opacity:  1;
-                }
-                #send-form ::-moz-placeholder { /* Mozilla Firefox 19+ */
-                    color: #fff;
-                    opacity:  1;
-                }
-                #send-form  :-ms-input-placeholder { /* Internet Explorer 10+ */
-                    color: #fff;
-                }
+#user-list {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    border-left: 1px solid #ddd;
+    background: #e4e6eb;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    z-index: 1;
+}
+
+#user-list .user {
+    padding: 10px 20px 10px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+#user-list .user .nick {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: table;
+    margin: 0 auto;
+}
+
+#send-form {
+    border-top: 2px solid #e4e6eb;
+    width: 88.5%;
+}
+
+#send-form input {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background: #c7cbd5;
+    padding: 10px;
+    width: 96%;
+    margin: 1em 0 1em 0;
+}
+
+#send-form input[type=text] {
+    margin-left: 1em;
+    border: 1px solid #eee;
+    vertical-align: bottom;
+    color: #fff;
+}
+
+#send-form input[placeholder] {
+    color: #fff !important;
+}
+
+#send-form ::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #fff;
+}
+
+#send-form :-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #fff;
+    opacity: 1;
+}
+
+#send-form ::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #fff;
+    opacity: 1;
+}
+
+#send-form :-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #fff;
+}

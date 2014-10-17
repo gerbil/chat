@@ -1,3 +1,5 @@
+const MESSAGE_COUNT = 7
+
 function divEscapedContentElement(message, name, avatar) {
     removeOldMessages();
     var result = false;
@@ -22,7 +24,7 @@ function divSystemContentElement(message) {
 // Не более 7 сообщений всего на экране
 // TODO: Запилить конфиг для количества сообщений (require js + coffee.script.cfg)
 function removeOldMessages() {
-    if ($('li.message').size() >= 7) {
+    if ($('li.message').size() >= MESSAGE_COUNT) {
         $('.message:eq(0)').remove()
     }
 }
@@ -123,7 +125,7 @@ $(document).ready(function () {
     });
 
 
-    // ROOM LIST
+    // ROOM LIST **************************************************************************************************
     socket.on('roomsUpdate', function (rooms) {
         $('#room-list ul').empty();
         for (var i = 0; i < rooms.length; i++) {
@@ -133,21 +135,19 @@ $(document).ready(function () {
     setInterval(function () {
         socket.emit('rooms');
     }, 2000);
-
     $('#room-list ul').on('click', 'li', function () {
         chatApp.processCommand('/join ' + $(this).text());
     });
+    // END ROOM LIST
 
-    // USER LIST
+    // USER LIST ***************************************************************************************************
     socket.on('users', function (users) {
-        $('#user-list').empty();
         users.forEach(function (user) {
-            $('#user-list').append('<div class="user"><img src="/images/avatars/' + user.avatar + '"><div class="nick">' + user.name + '</div></div>');
+            $('#user-list').html('<div class="user"><img src="/images/avatars/' + user.avatar + '"><div class="nick">' + user.name + '</div></div>');
         });
     });
-
     // Возвращаем всех юзеров в этой комнате сразу при запуске
-    // Крутим каждые 10 секунд
+    // Крутим каждую секунду
     function getUsersFromCurrentRoom() {
         var currentRoom = $('#room').text();
         socket.emit('users', currentRoom);
@@ -155,6 +155,7 @@ $(document).ready(function () {
     setInterval(function () {
         getUsersFromCurrentRoom();
     }, 1000);
+    // END USER LIST
 
     $('#send-message').focus();
 
@@ -162,7 +163,6 @@ $(document).ready(function () {
         processUserInput(chatApp, socket);
         return false;
     });
-
 
     // Менюшка настройки *********************************************************************************************
     //$('#actions ul').hide(); // Прячем менюшку

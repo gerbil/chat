@@ -98,8 +98,6 @@ function joinRoom(socket, room) {
 // При смене ника previousName меняется на name пришедшее в nameAttempt
 function handleNameChangeAttempts(socket, nickNames, namesUsed) {
     socket.on('nameAttempt', function (name) {
-
-
         // Достаём все имена из объекта юзеров
         namesUsed = [];
         var keys = Object.keys(nickNames);
